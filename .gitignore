@@ -31,3 +31,6 @@ build/
 .vscode/
 mvnw
 mvnw.cmd
+
+## MAC OS X
+**/.DS_Store

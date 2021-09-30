@@ -39,6 +39,7 @@ services:
   # phpadmin - you need read database :)
   phpadmin:
     image: phpmyadmin/phpmyadmin:latest
+    container_name: dbadmin
     ports:
       - "9090:80"
     environment:

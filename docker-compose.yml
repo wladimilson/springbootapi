@@ -1,0 +1,48 @@
+version: "3.8"
+
+# create network to application stack infrastructure
+networks:
+  java_net:
+    driver: bridge
+
+services:
+  # create database to application
+  mysql:
+    image: mysql:5
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=treinaweb
+      - MYSQL_USER=treinawebusr
+      - MYSQL_PASSWORD=treinawebpwd
+## the ports is closed to extern access
+## only application have database access
+#    ports:
+#      - "3306:3306"
+#    volumes:
+#      - "./mysql:/var/lib/mysql"
+    restart: always
+    networks:
+      - java_net
+
+  # application
+  app:
+    # build default Dockerfile
+    build: .
+    container_name: "java_app"
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - java_net
+
+  # phpadmin - you need read database :)
+  phpadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - "9090:80"
+    environment:
+      - PMA_ARBITRARY=1
+    restart: always
+    networks:
+      - java_net

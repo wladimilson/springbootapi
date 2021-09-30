@@ -26,15 +26,27 @@ After run the `docker-compose` command the application is started in your machin
 
 ## access application
 * http://localhost:8080/swagger-ui.html
-### get token
+### test api
+#### get token
 ```bash
-$ curl http://localhost:8080/login  -H 'Content-Type: application/json' -d '{"username":"admin", "password":"password"}' --silent | jq '.token' | xargs printf "Basic %s\n"
-Basic eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYzMzg4MDg1M30.nCBiANNApoRGOUTRQKc59RAHnMVPzT7krW-U9Zv_ZX9eVH9WeAoZio4gE56ceOv59MjO5OVYKsXVuAe8fVnpcA
+$ curl http://localhost:8080/login  -H 'Content-Type: application/json' -d '{"username":"admin", "password":"password"}' --silent | jq '.token' | xargs printf "Bearer %s\n"
+```
 
-$ curl http://localhost:8080/login  -H 'Content-Type: application/json' -d '{"username":"admin", "password":"password"}' --silent | jq
-{
-  "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYzMzg3NjYwN30.ZoSddm5qy18C2g2blU9xbhmd7VwtNWjGL63Mai4aIsxgEE5UhyFuUiB2g_D9RmlbloG-LHYHrnWI3up2JlUJlA"
-}
+#### write name
+```bash
+$ curl -X POST "http://localhost:8080/pessoa" -H "accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYzMzg4MDg1M30.nCBiANNApoRGOUTRQKc59RAHnMVPzT7krW-U9Zv_ZX9eVH9WeAoZio4gE56ceOv59MjO5OVYKsXVuAe8fVnpcA" -H "Content-Type: application/json" -d "{ \"id\": 0, \"nome\": \"Pedro\"}"
+```
+#### read all names
+```bash
+$ curl -X GET "http://localhost:8080/pessoa" -H "accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYzMzg4MDg1M30.nCBiANNApoRGOUTRQKc59RAHnMVPzT7krW-U9Zv_ZX9eVH9WeAoZio4gE56ceOv59MjO5OVYKsXVuAe8fVnpcA" -H "Content-Type: application/json"
+```
+#### read one name
+```bash
+curl -X GET "http://localhost:8080/pessoa/1" -H "accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYzMzg4MDg1M30.nCBiANNApoRGOUTRQKc59RAHnMVPzT7krW-U9Zv_ZX9eVH9WeAoZio4gE56ceOv59MjO5OVYKsXVuAe8fVnpcA" -H "Content-Type: application/json"
+```
+#### update name
+```bash
+$ curl -X PUT "http://localhost:8080/pessoa/1" -H "accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTYzMzg4MDg1M30.nCBiANNApoRGOUTRQKc59RAHnMVPzT7krW-U9Zv_ZX9eVH9WeAoZio4gE56ceOv59MjO5OVYKsXVuAe8fVnpcA" -H "Content-Type: application/json" -d "{ \"id\": 0, \"nome\": \"Pedro Robson Leão\"}"
 ```
 
 ## access database

@@ -4,6 +4,8 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+.cache/
+
 ### STS ###
 .apt_generated
 .classpath

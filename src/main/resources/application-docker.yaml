@@ -1,0 +1,34 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  boot:
+    admin:
+      context-path: /admin
+      client:
+        url: ${SPRING_BOOT_ADMIN_CLIENT_URL:http://app:8080/admin}
+        username: ${SPRING_BOOT_ADMIN_CLIENT_USERNAME:admin}
+        password: ${SPRING_BOOT_ADMIN_CLIENT_PASSWORD:admin}
+        instance:
+          service-base-url: ${SPRING_BOOT_ADMIN_CLIENT_INSTANCE_SERVICE_BASE_URL:http://app:8080}
+          metadata:
+            user.name: ${SPRING_BOOT_ADMIN_CLIENT_INSTANCE_METADATA_USER_NAME:admin}
+            user.password: ${SPRING_BOOT_ADMIN_CLIENT_INSTANCE_METADATA_USER_PASSWORD:admin}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/treinaweb?useSSL=false}
+    username: ${SPRING_DATASOURCE_USERNAME:treinawebusr}
+    password: ${SPRING_DATASOURCE_PASSWORD:treinawebpwd}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: update
+
+rsa:
+  privateKey: ${RSA_PRIVATE_KEY_PATH:classpath:certs/private-key.pem}
+  publicKey: ${RSA_PUBLIC_KEY_PATH:classpath:certs/public-key.pem}

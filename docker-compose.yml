@@ -1,0 +1,88 @@
+#version: '3.8'
+
+services:
+
+  # database aplication
+  mysql:
+    image: mariadb:latest
+    command: '--default-authentication-plugin=mysql_native_password'
+    #restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'mariadb-admin ping -h 127.0.0.1 --password="$$(cat /run/secrets/db-password)" --silent']
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    secrets:
+      - db-password
+    environment:
+      - MARIADB_USER=${DB_USER:-treinawebusr}
+      - MARIADB_PASSWORD=${DB_PASSWORD:-treinawebpwd}
+      - MARIADB_DATABASE=${DB_DATABASE:-treinaweb}
+      - MARIADB_ROOT_PASSWORD_FILE=/run/secrets/db-password
+    volumes:
+      - ${DB_ROOT_PASSWORD_FILE_PATH:-./db/pwd.txt}:/run/secrets/db-password # insert secret with volume to work in wsl-2
+    restart: always
+    ports:
+      - "127.0.0.1:${DB_PORT:-3306}:3306"
+
+  # application
+  app:
+    # build default Dockerfile
+    build: .
+    container_name: "java_app"
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${DB_DATABASE:-treinaweb}?useSSL=false
+      - SPRING_DATASOURCE_USERNAME=${DB_USER:-treinawebusr}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD:-treinawebpwd}
+      - SPRING_BOOT_ADMIN_CLIENT_URL=http://app:8080/admin
+      - SPRING_BOOT_ADMIN_CLIENT_USERNAME=${SPRING_BOOT_ADMIN_USERNAME:-admin}
+      - SPRING_BOOT_ADMIN_CLIENT_PASSWORD=${SPRING_BOOT_ADMIN_PASSWORD:-admin}
+      - SPRING_BOOT_ADMIN_CLIENT_INSTANCE_SERVICE_BASE_URL=http://app:8080
+      - SPRING_BOOT_ADMIN_CLIENT_INSTANCE_METADATA_USER_NAME=${SPRING_BOOT_ADMIN_USERNAME:-admin}
+      - SPRING_BOOT_ADMIN_CLIENT_INSTANCE_METADATA_USER_PASSWORD=${SPRING_BOOT_ADMIN_PASSWORD:-admin}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: always
+
+  # phpadmin - you need read database :)
+  phpadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: dbadmin
+    ports:
+      - "127.0.0.1:${PMA_PORT:-9090}:80"
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=${DB_USER:-treinawebusr}
+      - PMA_PASSWORD=${DB_PASSWORD:-treinawebpwd}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: always
+
+  newman:
+    image: postman/newman:alpine
+    container_name: api_tests
+    volumes:
+      - ./newman/tests:/etc/newman
+    entrypoint:
+      - /bin/sh 
+      - -c
+      - | 
+        sleep 30;
+        npm install --silent --global newman-reporter-htmlextra; 
+        newman run \
+          --iteration-count 10 \
+          --environment test-docker.postman_environment.json \
+          simple_spring_boot_rest_api.postman_collection.json \
+          --reporters htmlextra;
+    depends_on:
+      - app
+
+secrets:
+  db-password:
+    file: ${DB_ROOT_PASSWORD_FILE_PATH:-db/pwd.txt}

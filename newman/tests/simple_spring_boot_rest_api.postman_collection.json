@@ -1,0 +1,1401 @@
+{
+	"info": {
+		"_postman_id": "79e1663b-88ab-4aba-bec6-70d4a285b8c3",
+		"name": "Simple Spring Boot REST API",
+		"description": "\"Um exemplo de aplicação Spring Boot REST API\"\n\nContact Support:\n Name: Wladimilson\n Email: contato@treinaweb.com.br",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1786200"
+	},
+	"item": [
+		{
+			"name": "login",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(`${pm.info.requestName} - Response body structure is valid`, function () {",
+									"    pm.expect(pm.response.json()).to.have.property('token'); // verifica se o response possui o elemento 'token'",
+									"    pm.environment.set(\"token\", pm.response.json().token); // salva o token",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"toke\": \"blablablablabla\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Login - Falha",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(`${pm.info.requestName} - Status is 401`, function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"wrong\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "pessoa",
+			"item": [
+				{
+					"name": "{id}",
+					"item": [
+						{
+							"name": "GetById",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(`${pm.info.requestName} - Response body structure is valid`, function () {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data).to.have.property('id'); // valida a propriedade 'id' no json",
+											"    pm.expect(data).to.have.property('nome'); // valida a propriedade 'nome' no json ",
+											"    ",
+											"    const db = {",
+											"        // pega ultimo registro salvo",
+											"        id: pm.environment.get('db_id'),",
+											"        nome: pm.environment.get('db_nome')",
+											"    };",
+											"    pm.expect(db.id).to.be.a(\"number\"); // check se o campo 'id' esta realmente com um valor numerico",
+											"    pm.expect(db.nome).to.be.a(\"string\"); // check se o campo 'nome' esta realmente com um valor string",
+											"",
+											"    pm.expect(db.id).to.eql(data.id); // compara o id coletado com o salvo",
+											"    pm.expect(db.nome).to.eql(data.nome); // compara o nome coletado com o salvo",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/pessoa/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{db_id}}"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "<API Key>",
+												"description": "Added as a part of security scheme: apikey"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/pessoa/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"pessoa",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "39987363",
+													"description": "(Required) id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": -82075899,\n  \"nome\": \"ullamco fugiat\"\n}"
+								},
+								{
+									"name": "Forbidden!",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "<API Key>",
+												"description": "Added as a part of security scheme: apikey"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/pessoa/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"pessoa",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "39987363",
+													"description": "(Required) id"
+												}
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "500 message",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "<API Key>",
+												"description": "Added as a part of security scheme: apikey"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/pessoa/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"pessoa",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "39987363",
+													"description": "(Required) id"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"value\": \"reference #/components/schemas/Error not found in the OpenAPI spec\"\n}"
+								}
+							]
+						},
+						{
+							"name": "GetByIdAfterPut",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(`${pm.info.requestName} - Response body structure is valid`, function () {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data).to.have.property('id'); // valida a propriedade 'id' no json",
+											"    pm.expect(data).to.have.property('nome'); // valida a propriedade 'nome' no json ",
+											"    ",
+											"    const db = {",
+											"        // pega ultimo registro salvo",
+											"        id: pm.environment.get('db_id'),",
+											"        nome: pm.environment.get('db_nome')",
+											"    };",
+											"    pm.expect(db.id).to.be.a(\"number\"); // check se o campo 'id' esta realmente com um valor numerico",
+											"    pm.expect(db.nome).to.be.a(\"string\"); // check se o campo 'nome' esta realmente com um valor string",
+											"",
+											"    pm.expect(db.id).to.eql(data.id); // compara o id coletado com o salvo",
+											"    pm.expect(db.nome).to.eql(data.nome); // compara o nome coletado com o salvo",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/pessoa/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{db_id}}"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "<API Key>",
+												"description": "Added as a part of security scheme: apikey"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/pessoa/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"pessoa",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "39987363",
+													"description": "(Required) id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": -82075899,\n  \"nome\": \"ullamco fugiat\"\n}"
+								},
+								{
+									"name": "Forbidden!",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "<API Key>",
+												"description": "Added as a part of security scheme: apikey"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/pessoa/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"pessoa",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "39987363",
+													"description": "(Required) id"
+												}
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								},
+								{
+									"name": "500 message",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "<API Key>",
+												"description": "Added as a part of security scheme: apikey"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/pessoa/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"pessoa",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "39987363",
+													"description": "(Required) id"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"value\": \"reference #/components/schemas/Error not found in the OpenAPI spec\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Put",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(`${pm.info.requestName} - Response body structure is valid`, function () {",
+											"    const data = pm.response.json();",
+											"    pm.expect(data).to.have.property('id'); // valida a existencia do campo 'id'",
+											"    pm.expect(data).to.have.property('nome'); // valida a existencia do campo 'nome'",
+											"",
+											"    pm.environment.set('db_id', data.id); // salva o campo 'id' registrado na api",
+											"    pm.environment.set('db_nome', data.nome); // salva o campo 'nome' registrado na api",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": {{db_id}},\n  \"nome\": \"{{$randomLastName}} {{$randomFirstName}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/pessoa/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{db_id}}",
+											"description": "(Required) id"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "<API Key>",
+												"description": "Added as a part of security scheme: apikey"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": -82075899,\n  \"nome\": \"ullamco fugiat\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/pessoa/:id",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"pessoa",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "39987363",
+													"description": "(Required) id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": 0,\n  \"nome\": \"Bruce Waine - PUT\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Put - Nome Curto",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(`${pm.info.requestName} - Status is 400`, function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": {{db_id}},\n  \"nome\": \"Ab\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/pessoa/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{db_id}}",
+											"description": "(Required) id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Put - Nome Longo",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set('long_nome', 'A'.repeat(256));"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(`${pm.info.requestName} - Status is 400`, function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.environment.unset('long_nome');"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": {{db_id}},\n  \"nome\": \"{{long_nome}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/pessoa/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{db_id}}",
+											"description": "(Required) id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// removed unset, handled in last test"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/pessoa/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{db_id}}",
+											"description": "(Required) id"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "<API Key>",
+												"description": "Added as a part of security scheme: apikey"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/pessoa/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"pessoa",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "39987363",
+													"description": "(Required) id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{}"
+								}
+							]
+						},
+						{
+							"name": "GetById - Não Encontrado",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(`${pm.info.requestName} - Status is 404`, function () {",
+											"    pm.response.to.have.status(404);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/pessoa/999999",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa",
+										"999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete - Não Encontrado",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(`${pm.info.requestName} - Status is 404`, function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"['token','db_id','db_nome','id'].forEach(k=>pm.environment.unset(k)); // remove as variaveis temporarias"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/pessoa/999999",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa",
+										"999999"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(`${pm.info.requestName} - Response body structure is valid`, function () {",
+									"    const data = pm.response.json();",
+									"    pm.expect(data).to.have.property('id'); // valida a existencia do campo 'id'",
+									"    pm.expect(data).to.have.property('nome'); // valida a existencia do campo 'nome'",
+									"",
+									"    pm.environment.set('db_id', data.id); // salva o campo 'id' registrado na api",
+									"    pm.environment.set('db_nome', data.nome); // salva o campo 'nome' registrado na api",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"{{$randomFirstName}} {{$randomLastName}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pessoa",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pessoa"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<API Key>",
+										"description": "Added as a part of security scheme: apikey"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": -82075899,\n  \"nome\": \"ullamco fugiat\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/pessoa",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": -82075899,\n  \"nome\": \"ullamco fugiat\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Post - Nome Curto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(`${pm.info.requestName} - Status is 400`, function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Ab\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pessoa",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pessoa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post - Nome Longo",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set('long_nome', 'A'.repeat(256));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(`${pm.info.requestName} - Status is 400`, function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.environment.unset('long_nome');"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"{{long_nome}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pessoa",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pessoa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAll",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(`${pm.info.requestName} - check response list size`, () => {",
+									"    pm.expect(pm.response.json().length).to.gte(0); // valida se o payload trouxe ao menos um registro",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/pessoa",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pessoa"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Retorna a lista de pessoa",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<API Key>",
+										"description": "Added as a part of security scheme: apikey"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/pessoa",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": -9176020,\n    \"nome\": \"aliqua ea dolor reprehenderit ex\"\n  },\n  {\n    \"id\": 27211709,\n    \"nome\": \"Lorem tempor laboris est veniam\"\n  }\n]"
+						},
+						{
+							"name": "Você não tem permissão para acessar este recurso",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<API Key>",
+										"description": "Added as a part of security scheme: apikey"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/pessoa",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Foi gerada uma exceção",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<API Key>",
+										"description": "Added as a part of security scheme: apikey"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/pessoa",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"pessoa"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"value\": \"reference #/components/schemas/Error not found in the OpenAPI spec\"\n}"
+						}
+					]
+				},
+				{
+					"name": "GetAll - Sem Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(`${pm.info.requestName} - Status is 401 or 403`, () => {",
+									"    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/pessoa",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pessoa"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "actuator",
+			"item": [
+				{
+					"name": "Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SBOM",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/sbom",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"actuator",
+								"sbom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SBOM Application",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/sbom/application",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"actuator",
+								"sbom",
+								"application"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const workflow = pm.environment.get('workflow').split(',').filter(Boolean); // get workflow array, remove empty strings",
+					"",
+					"let currentRequest = pm.info.requestName; // nome do request atual",
+					"let idx = workflow.indexOf(currentRequest); // id do request no workflow",
+					"",
+					"let next = (idx >= 0 && idx < workflow.length - 1) ? workflow[idx + 1] : null;  // pega nome do proximo request no workflow ",
+					"",
+					"console.log((next)?`next: ${next}`:'end tests'); // loga o proximo request na console",
+					"if (next) pm.execution.setNextRequest(next); // seta o proximo request",
+					"else pm.execution.setNextRequest(null);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"if (!pm.info.requestName.includes(\" - \")) {",
+					"    pm.test(`${pm.info.requestName} - OK` , () => {",
+					"        pm.response.to.have.status(200); // realiza a valisacao do status OK paracada um dos requests",
+					"    });",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

@@ -1,8 +1,9 @@
 HELP.md
 target/
-.mvn/
 !**/src/main/**
 !**/src/test/**
+
+.cache/
 
 ### STS ###
 .apt_generated
@@ -29,8 +30,17 @@ build/
 
 ### VS Code ###
 .vscode/
-mvnw
-mvnw.cmd
 
 ## MAC OS X
 **/.DS_Store
+
+**/*.html
+
+# Environment variables
+.env
+
+### jmeter  tests
+jmeter/reports/
+jmeter/*.jtl
+jmeter/*.log
+
